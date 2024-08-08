@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #e4e3e3;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        color: #000000;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Navigation Bar Styles */
+      .navbar {
+        background-color: #000; /* Dark background */
+        padding: 10px 140px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .navbar h1 {
+        margin: 0;
+        padding: 0;
+        font-size: 40px;
+        color: #ffffff; /* Blue color */
+      }
+
+      .navbar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar ul li {
+        margin-right: 20px;
+      }
+
+      .navbar ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        transition: color 0.3s; /* Smooth color transition */
+      }
+
+      .navbar ul li a:hover {
+        color: #ccc; /* Light grey on hover */
+      }
+
+      /* Bill Styles */
+      .bill {
+        width: 80%;
+        margin-top: 6.5vh;
+        margin-bottom: 12vh;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .bill-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .bill-header h1 {
+        font-size: 32px;
+        margin: 0;
+      }
+
+      .cart-items {
+        margin-bottom: 20px;
+      }
+
+      .cart-item {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .cart-item img {
+        max-width: auto;
+        height: 290px;
+        margin-right: 20px;
+        flex-shrink: 0;
+      }
+
+      .cart-item-details {
+        flex: 1;
+      }
+
+      .cart-item-details h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .cart-item-details p {
+        margin: 5px 0;
+      }
+
+      .date-inputs,
+      .guests-inputs {
+        margin-bottom: 10px;
+      }
+
+      .date-inputs label,
+      .guests-inputs label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .date-inputs input,
+      .guests-inputs input {
+        margin-bottom: 10px;
+        padding: 5px;
+        font-size: 16px;
+        width: 100%;
+      }
+
+      .remove-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .remove-item {
+        display: inline-block;
+        text-decoration: none;
+        color: #000;
+        background-color: #ccc;
+        padding: 6px 12px;
+        border-radius: 3px;
+        font-size: 14px;
+        border: none;
+      }
+
+      .remove-item:hover {
+        background-color: #999;
+      }
+
+      .subtotal {
+        text-align: right;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .total-price {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 20px;
+      }
+
+      .proceed-to-pay {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .proceed-to-pay a {
+        display: inline-block;
+        text-decoration: none;
+        color: #fff;
+        background-color: #007bff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+      }
+
+      .proceed-to-pay a:hover {
+        background-color: #0056b3;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      /* Footer Styles */
+      .footer {
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .footer p {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+
+    <nav class="navbar">
+      <h1>Wonderful <span style="color: #14faeb">Stay</span></h1>
+      <ul>
+        <li><a href="/profile">Home</a></li>
+        <li><a href="#">Menu</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li>
+          <a href="/cartscreen"><i class="fas fa-bed"></i></a>
+        </li>
+        <li>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+      </ul>
+    </nav>
+    <nav class="navbar" style="background-color: #262323">
+      <div class="container"></div>
+    </nav>
+
+    <!-- Main Content: Your Cart -->
+    <div class="main-content">
+      <div class="bill">
+        <div class="bill-header">
+          <h1>Your Booking</h1>
+          <p>Date: <%= new Date().toLocaleDateString() %></p>
+        </div>
+        <div class="cart-items">
+          <% let totalPrice = 0; %> <% user.posts.forEach(function(item) { %>
+          <div class="cart-item">
+            <img src="<%= item.image %>" alt="<%= item.name %>" />
+            <div class="cart-item-details">
+              <h2><%= item.name %></h2>
+              <p>Price per Night: $<%= item.price %></p>
+              <p>Number of Rooms: <%= item.quantity %></p>
+              <div class="date-inputs">
+                <label for="checkIn_<%= item._id %>">Check-in Date:</label>
+                <input
+                  type="date"
+                  id="checkIn_<%= item._id %>"
+                  onchange="calculateSubtotal('<%= item._id %>', <%= item.price %>, <%= item.quantity %>)"
+                />
+                <label for="checkOut_<%= item._id %>">Check-out Date:</label>
+                <input
+                  type="date"
+                  id="checkOut_<%= item._id %>"
+                  onchange="calculateSubtotal('<%= item._id %>', <%= item.price %>, <%= item.quantity %>)"
+                />
+              </div>
+              <div class="guests-inputs">
+                <label for="guests_<%= item._id %>">Number of Guests:</label>
+                <input
+                  type="number"
+                  id="guests_<%= item._id %>"
+                  value="<%= item.guests || 1 %>"
+                  onchange="calculateSubtotal('<%= item._id %>', <%= item.price %>, <%= item.quantity %>)"
+                />
+              </div>
+              <div class="remove-container">
+                <form action="/removefromcart/<%= item._id %>" method="POST">
+                  <button type="submit" class="remove-item">Remove</button>
+                </form>
+              </div>
+              <div class="subtotal" id="subtotal_<%= item._id %>">
+                Subtotal: $<%= (item.price * item.quantity).toFixed(2) %>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <div class="total-price">
+          Total Price: $<%= totalPrice.toFixed(2) %>
+        </div>
+        <div class="proceed-to-pay">
+          <a href="#" id="proceedToPay">Proceed to Payment</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Payment Details</h2>
+        <!-- Include Stripe or other payment gateway form here -->
+        <form id="paymentForm">
+          <label for="card-element">Credit or Debit Card</label>
+          <div id="card-element"></div>
+          <div id="card-errors" role="alert"></div>
+          <button type="submit">Pay</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("paymentModal");
+        const closeModal = document.getElementById("closeModal");
+        const proceedToPay = document.getElementById("proceedToPay");
+        const stripe = Stripe("YOUR_PUBLISHABLE_KEY"); // Replace with your Stripe publishable key
+        const elements = stripe.elements();
+        const cardElement = elements.create("card");
+        cardElement.mount("#card-element");
+
+        proceedToPay.addEventListener("click", async (e) => {
+          e.preventDefault();
+          modal.style.display = "flex";
+        });
+
+        closeModal.addEventListener("click", () => {
+          modal.style.display = "none";
+        });
+
+        window.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.style.display = "none";
+          }
+        });
+
+        const paymentForm = document.getElementById("paymentForm");
+        paymentForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const { token, error } = await stripe.createToken(cardElement);
+
+          if (error) {
+            document.getElementById("card-errors").textContent = error.message;
+          } else {
+            fetch("/charge", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ token: token.id }),
+            }).then((response) => {
+              if (response.ok) {
+                window.location.href = "/thank-you";
+              } else {
+                document.getElementById("card-errors").textContent =
+                  "Payment failed.";
+              }
+            });
+          }
+        });
+      });
+
+      function calculateSubtotal(itemId, pricePerNight, quantity) {
+        const checkInDate = new Date(
+          document.getElementById(`checkIn_${itemId}`).value
+        );
+        const checkOutDate = new Date(
+          document.getElementById(`checkOut_${itemId}`).value
+        );
+
+        if (checkInDate && checkOutDate && checkInDate < checkOutDate) {
+          const timeDiff = checkOutDate - checkInDate;
+          const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+          // Calculate subtotal
+          const subtotal = daysDiff * pricePerNight * quantity;
+
+          // Update subtotal element
+          document.getElementById(
+            `subtotal_${itemId}`
+          ).innerHTML = `Subtotal: $${subtotal.toFixed(2)}`;
+
+          // Update total price
+          updateTotalPrice();
+        } else {
+          document.getElementById(
+            `subtotal_${itemId}`
+          ).innerHTML = `Subtotal: $0.00`;
+        }
+      }
+
+      function updateTotalPrice() {
+        let total = 0;
+        document.querySelectorAll(".subtotal").forEach((subtotalElement) => {
+          const subtotal = parseFloat(
+            subtotalElement.textContent.replace("Subtotal: $", "")
+          );
+          total += subtotal;
+        });
+
+        document.querySelector(
+          ".total-price"
+        ).innerHTML = `Total Price: $${total.toFixed(2)}`;
+      }
+    </script>
+  </body>
+</html>
